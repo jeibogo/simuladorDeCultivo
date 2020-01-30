@@ -8,6 +8,60 @@
 
 using namespace std;
 
+//FUNCIONES
+string cadenaNumero(string x){
+
+    bool esNumeroSalir=0;
+  
+    int i = 0;
+
+    while( esNumeroSalir == 0){
+
+          bool alfabeto=0;
+          int contadorPunto=0;
+          bool contadorSigno=0;
+
+          for(int j=0; j<x.size(); j++){ //recorre el string en busqueda de puntos
+                if( x[j] == ',' || x[j] =='.'){ //si se escribio una coma la cambia a punto
+
+                        x[j] = '.';
+                        
+                        contadorPunto += 1;
+
+                    }
+                if(x[j] == '-' ){
+                    contadorSigno += 1;
+                }
+            }
+
+          //si s un numero o punto o coma y no se contaron mas de 1 punto (contando el 1), se tiene una letra o no. 
+        for(int i = 0; i<x.size(); i++){ 
+
+            if( (x[i] == '1' || x[i] == '2' || x[i] == '3' || x[i] == '4' || x[i] == '5' || x[i] == '6' || x[i] == '7' || x[i] == '8' || x[i] == '9' || x[i] == '0' || x[i] =='.' || x[i]==',' || x[i] == '-') && contadorPunto <= 1 && contadorSigno<=1 ){
+                
+
+                //no hace falta hacer nada, simplemente esta bien, y el caracter en el que estamos es un numero     
+            }else{
+                alfabeto = 1;
+            }
+        }
+        if(alfabeto == 1){
+
+            cout<<"el numero debe ser un entero o decimal"<<endl;
+            cin>>x;
+
+        }else{
+            
+            esNumeroSalir=1;
+
+        }
+
+    }
+    
+    return x;
+}
+
+
 int main(){
 
     ifstream elArchivo;
@@ -148,28 +202,36 @@ int main(){
          //no se sabe porque pero esta imprimiendo una vez de mas, hay que corregir con un -2.
 
         cout<<"escriba minimo valor registrado para el PH"<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
-        string x;
-        cin>>x;
+
+        string datoMin;
+        cin>>datoMin;
+        //si sirve como numero decimal, se usa y se asigna. la funcion obliga a 
+        datoMin = cadenaNumero(datoMin);
+        double a; //a es para comparar y ver cual es el verdadero min y max en caso de haberlos colocado al reves.
+
+        stringstream(datoMin) >> a;
 
         cout<<"escriba maximo valor registrado para el PH"<<endl;
-        string y;
-        cin>>y;
+        string datoMax;
+        cin>>datoMax;
+        datoMax = cadenaNumero(datoMax);
+
         //pasar a double, para poder comparar
 
-        double a = stod(x);
-        double b = stod(y);
+        double b;
+        stringstream(datoMax) >> b;
 
         if(a<b){
 
-            datosUsuarioMin.push_back(x);
-            datosUsuarioMax.push_back(y);
-            }else{
-            datosUsuarioMin.push_back(y);
-            datosUsuarioMax.push_back(x);
+            datosUsuarioMin.push_back(datoMin);
+            datosUsuarioMax.push_back(datoMax);
+        }
+        else{
+        
+            datosUsuarioMin.push_back(datoMax);
+            datosUsuarioMax.push_back(datoMin);
         }
         
-        
-
         
     }
 

@@ -2,6 +2,9 @@
 #include <vector>
 #include <fstream>
 #include <random>
+#include <string>
+#include <sstream>
+#include <typeinfo>
 
 using namespace std;
 
@@ -22,15 +25,23 @@ int main(){
 
     int cantidadCol=0;
 
-    string aux;
+    vector< vector<string> >titulos; //cuando se corten las palabras de aux por la coma en el 'if(aux[i]){...}' se gruardaran aqui
+    vector<string> caracteres; //obtiene caracter por caracter a aux que sirve solo para saber cantidad de columnas, ahora hay que cortar esa palabras
+    string aux; // guarda la primera linea de la tabla csv es decir los titulos.
+
     getline(elArchivo,aux);
     for(int i=0; i<aux.size(); i++){
 
         if(aux[i] == ','){
+
             cantidadCol += 1;
         }
+
     }
     
+
+
+
     //NO ESTA FUNCIONANDO
    // string columna;  // mientras tanto, para obtener lo nombres de las columnas
     //vector<string> titulo; //guarda el nombre de las columnas en un vector
@@ -136,8 +147,7 @@ int main(){
 
          //no se sabe porque pero esta imprimiendo una vez de mas, hay que corregir con un -2.
 
-        cout<<"escriba minimo valor registrado para el PH"<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.
-                                                                    
+        cout<<"escriba minimo valor registrado para el PH"<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
         string x;
         cin>>x;
 
@@ -174,13 +184,57 @@ int main(){
 
         cout<<datosUsuarioMin[b]<<" ";
     } 
+    cout<<endl;
 
     //COMPARANDO LOS DATOS DE EL CSV CON LOS DEL USUARIO. 
 
-   // for(int u=0; u<matriz.size(); u++){
+    for(int u=0; u<matriz.size(); u++){
 
+            for(int n =1 ; n<datosUsuarioMax.size()+1; n++){ // como matriz es mas grande, hay que mover los datos de usuario que es un vector mas pequeño empezamos desde 1 para no tomar en cuenta la columna cultivo de la matriz y sumamos 1 para poder comparar e imprimir todo.
+
+                //cout<<"estamos en la n ====="<<n<<endl;
+
+                //para guiarse en la ejecucion (el debug casero)
+                
+                //cout<<matriz[u][n] << "MATRIZ"<<endl;
+                //cout<<datosUsuarioMin[n-1]<< "MIN"<<endl;
+                //cout<<datosUsuarioMax[n-1]<< "MAX"<<endl;
+
+                if(n<2){ //si n no ha pasado de la parte donde se selecciona la textura de suelo se usa una comparacion simple con datosUsuario max
+                    
+                    cout<<matriz[u][0];
+
+                    if( datosUsuarioMin[n-1] == matriz[u][n] ){
+                        
+                        cout<<" O";
+                    } 
+                    else{
+                        cout<<" X";
+                    }
+                
+                }else{ //si ya paso la parte de textura, hay que cambiar los string a double con la libreria sstring y la funcion stringstream
+                     
+                     double min, mid, max;
+
+                    stringstream(datosUsuarioMin[n-1])>>min;
+                    stringstream(matriz[u][n])>>mid;
+                    stringstream(datosUsuarioMax[n-1])>>max;
+
+                    if( (min - mid) <= 0 && (max - mid) >= 0 ){
+                        
+                        cout<<" O";
+                    } 
+                    else{
+                        cout<<" X";
+                    }
+
+                }
+              
+            }
+
+            cout<<endl;
         
-    //}
+    }
 
     return 0;
 

@@ -1,10 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <random>
 #include <string>
 #include <sstream>
-#include <typeinfo>
 
 using namespace std;
 
@@ -30,7 +28,7 @@ string cadenaNumero(string x){
 
                     }
                 if(x[j] == '-' ){
-                    contadorSigno += 1;
+                    contadorSigno += 1; //por si acaso los negativos
                 }
             }
 
@@ -62,13 +60,14 @@ string cadenaNumero(string x){
 }
 
 
+//INICIO
 int main(){
 
     ifstream elArchivo;
     string texto;
 
     int cuentaLoop=0;
-
+//ABRIR EL ARCHIVO CSV Y VER SI NO TIENE FALLOS
  elArchivo.open("matrizCultivos.csv",ios::in);//se abre el archivo en modo lectura
 
     if(elArchivo.fail()){//si no se encuentra el archivo mandar mensaje
@@ -79,34 +78,35 @@ int main(){
 
     int cantidadCol=0;
 
-    vector< vector<string> >titulos; //cuando se corten las palabras de aux por la coma en el 'if(aux[i]){...}' se gruardaran aqui
-    vector<string> caracteres; //obtiene caracter por caracter a aux que sirve solo para saber cantidad de columnas, ahora hay que cortar esa palabras
+    //vector< vector<string> >titulos; //cuando se corten las palabras de aux por la coma en el 'if(aux[i]){...}' se gruardaran aqui
+    vector<string> titulo; //obtiene caracter por caracter a aux que sirve solo para saber cantidad de columnas, ahora hay que cortar esa palabras
     string aux; // guarda la primera linea de la tabla csv es decir los titulos.
 
     getline(elArchivo,aux);
-    for(int i=0; i<aux.size(); i++){
+    string palabra;
+    
+    //SEPARA LAS PALABRAS DE AUX Y DICE CUANTAS COLUMNAS TIENE EL CSV
+    for(int i=0; i<aux.size(); i++){//obtiene caracter a caracter de los titulos y los guarda en vector titulos
 
-        if(aux[i] == ','){
+        if(aux[i] != ','){
+        
+            palabra.push_back(aux[i]);
+            
+        }
+        else{
+            
+            titulo.push_back(palabra);
+
+            while(palabra.empty()==false){
+                
+                palabra.pop_back();
+            }
 
             cantidadCol += 1;
         }
 
     }
     
-
-
-
-    //NO ESTA FUNCIONANDO
-   // string columna;  // mientras tanto, para obtener lo nombres de las columnas
-    //vector<string> titulo; //guarda el nombre de las columnas en un vector
-    //while( !aux.empty() ){
-    
-   //     getline(aux,columna,',');
-   //     titulo.push_back(columna);
-   // }
-    //NO ESTA FUNCIONANDO
-
-    cout<<aux;
 
     cout<<cantidadCol<<" = cantidad de columnas"<<endl;
     
@@ -116,6 +116,8 @@ int main(){
     vector <string> tupla;   // tupla por fuera para reiniciarla luego, no cada while
 
     string word;
+
+    //PASAR LOS DATOS DEL CSV A LA MATRIZ
     while (!elArchivo.eof()){
 
         comas += 1;
@@ -152,16 +154,16 @@ int main(){
 
     cout<<matriz[3][4];
 
-    //TOMAR DATOS DEL USUARIO
-    
     vector<string> datosUsuarioMax;
     vector<string> datosUsuarioMin;
 
-   for(int p=0; p<cantidadCol-2; p++){  //empieza en 1 para hacer solo 4 veces ya que no se requiere poner la columna del cultivo
+//TOMAR DATOS DEL USUARIO
+//int p=0; p<cantidadCol-2; p++ recordatorio de como estaba el loop
+   for(int p=2; p<cantidadCol; p++){  //empieza en 1 para hacer solo 4 veces ya que no se requiere poner la columna del cultivo
 
         cout<<"p en el que estamos"<<p<<endl;
 
-        if(p == 0){ //si p es 0 entonces hacer la primera columna que seria textutra
+        if(p == 2){ //si p es 0 entonces hacer la primera columna que seria textutra
 
             bool flagSalir=0;
 
@@ -201,7 +203,7 @@ int main(){
 
          //no se sabe porque pero esta imprimiendo una vez de mas, hay que corregir con un -2.
 
-        cout<<"escriba minimo valor registrado para el PH"<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
+        cout<<"escriba minimo valor registrado para "<<titulo[p]<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
 
         string datoMin;
         cin>>datoMin;
@@ -211,7 +213,7 @@ int main(){
 
         stringstream(datoMin) >> a;
 
-        cout<<"escriba maximo valor registrado para el PH"<<endl;
+        cout<<"escriba maximo valor registrado para "<<titulo[p]<<endl;
         string datoMax;
         cin>>datoMax;
         datoMax = cadenaNumero(datoMax);
@@ -248,6 +250,16 @@ int main(){
     } 
     cout<<endl;
 
+    //IMPRIME LOS TITULOS
+    for(int k=0; k<titulo.size(); k++){
+
+        cout<<titulo[k].substr(0,6)<<"\t";
+        if(k == 0){ //para cuadrar los titulos con los resultados
+            cout<<"\t";
+        }
+    }
+    cout<<endl;
+
     //COMPARANDO LOS DATOS DE EL CSV CON LOS DEL USUARIO. 
 
     for(int u=0; u<matriz.size(); u++){
@@ -264,14 +276,14 @@ int main(){
 
                 if(n<2){ //si n no ha pasado de la parte donde se selecciona la textura de suelo se usa una comparacion simple con datosUsuario max
                     
-                    cout<<matriz[u][0];
+                    cout<<matriz[u][0]<<"\t";
 
                     if( datosUsuarioMin[n-1] == matriz[u][n] ){
                         
-                        cout<<" O";
+                        cout<<"\tO";
                     } 
                     else{
-                        cout<<" X";
+                        cout<<"\tX";
                     }
                 
                 }else{ //si ya paso la parte de textura, hay que cambiar los string a double con la libreria sstring y la funcion stringstream
@@ -284,10 +296,10 @@ int main(){
 
                     if( (min - mid) <= 0 && (max - mid) >= 0 ){
                         
-                        cout<<" O";
+                        cout<<"\tO";
                     } 
                     else{
-                        cout<<" X";
+                        cout<<"\tX";
                     }
 
                 }

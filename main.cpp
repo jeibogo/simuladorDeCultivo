@@ -17,29 +17,45 @@ string cadenaNumero(string x, int datoTitulo){
 
           bool alfabeto=0;
           int contadorPunto=0;
-          bool contadorSigno=0;
+          int contadorSigno=0;
 
           for(int j=0; j<x.size(); j++){ //recorre el string en busqueda de puntos
+                
                 if( x[j] == ',' || x[j] =='.'){ //si se escribio una coma la cambia a punto
 
-                        x[j] = '.';
+                    x[j] = '.';
                         
-                        contadorPunto += 1;
+                    contadorPunto += 1; 
+                }
 
-                    }
                 if(x[j] == '-' ){
+
                     contadorSigno += 1; //por si acaso los negativos
                 }
+            
+            }
+
+
+            cout<<contadorPunto<<"punto";
+            cout<<contadorSigno<<"signo";
+
+            if( x == ".-"|| x == "-."){ //una forma de dañar el programa sin que salten errores.
+
+                x = "error";//error es solo una palabra que se eligio para que no pase el filtro, ya el filtro va a saber que no es un numero
             }
 
            if(contadorPunto == 1 && x.size() == 1){ //por si acaso es solo un punto
                x = "0";
            }
+           if(contadorSigno == 1 && x[0]!='-'){
+               
+               contadorSigno +=1; //con esto se asegura que no pase el filtro de si es negativo al tener un solo '-', el problemas es que esta en una posicion indevida
+           }
 
           //si s un numero o punto o coma y no se contaron mas de 1 punto (contando el 1), se tiene una letra o no. 
         for(int i = 0; i<x.size(); i++){ 
 
-            if( (x[i] == '1' || x[i] == '2' || x[i] == '3' || x[i] == '4' || x[i] == '5' || x[i] == '6' || x[i] == '7' || x[i] == '8' || x[i] == '9' || x[i] == '0' || x[i] =='.' || x[i]==',' || x[i] == '-') && contadorPunto <= 1 && contadorSigno<=1 ){
+            if( (x[i] == '1' || x[i] == '2' || x[i] == '3' || x[i] == '4' || x[i] == '5' || x[i] == '6' || x[i] == '7' || x[i] == '8' || x[i] == '9' || x[i] == '0' || x[i] =='.' || x[i]==',' || x[i] == '-') && contadorPunto <= 1 && contadorSigno <=1 ){
                 
 
                 //no hace falta hacer nada, simplemente esta bien, y el caracter en el que estamos es un numero     
@@ -132,7 +148,7 @@ int main(){
 
             while(palabra.empty()==false){
                 
-                palabra.pop_back();
+                palabra.clear();
             }
 
             cantidadCol += 1;
@@ -270,7 +286,7 @@ int main(){
     }
 cout<<endl;
     //VER DATOS USUARIO
-    /*
+    
     for(int a=0; a<datosUsuarioMax.size(); a++ ){
 
         cout<<datosUsuarioMax[a]<<" ";
@@ -281,7 +297,7 @@ cout<<endl;
         cout<<datosUsuarioMin[b]<<" ";
     } 
     cout<<endl;
-*/
+
     //IMPRIME LOS TITULOS 
     for(int k=0; k<titulo.size(); k++){
 

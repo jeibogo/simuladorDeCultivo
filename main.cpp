@@ -36,8 +36,8 @@ string cadenaNumero(string x, int datoTitulo){
             }
 
 
-            cout<<contadorPunto<<"punto";
-            cout<<contadorSigno<<"signo";
+            //cout<<contadorPunto<<"punto";
+            //cout<<contadorSigno<<"signo";
 
             if( x == ".-"|| x == "-."){ //una forma de dañar el programa sin que salten errores.
 
@@ -111,6 +111,10 @@ string cadenaNumero(string x, int datoTitulo){
 
 //INICIO
 int main(){
+    
+    cout<<"--------------------------"<<endl;
+    cout<<"<< SIMULADOR DE CULTIVO >>"<<endl;
+    cout<<"--------------------------"<<endl;
 
     ifstream elArchivo;
     string texto;
@@ -285,18 +289,20 @@ int main(){
 
     }
 cout<<endl;
-    //VER DATOS USUARIO
+    //VER DATOS USUARIO DEBUG
     
-    for(int a=0; a<datosUsuarioMax.size(); a++ ){
+    //for(int a=0; a<datosUsuarioMax.size(); a++ ){
 
-        cout<<datosUsuarioMax[a]<<" ";
-    }
-    cout<<endl;
-    for(int b=0; b<datosUsuarioMin.size(); b++){
+    //    cout<<datosUsuarioMax[a]<<" ";
+    //}
+    //cout<<endl;
+    //for(int b=0; b<datosUsuarioMin.size(); b++){
 
-        cout<<datosUsuarioMin[b]<<" ";
-    } 
+    //    cout<<datosUsuarioMin[b]<<" ";
+    //} 
     cout<<endl;
+
+    cout<<"RESULTADOS: \n"<<endl;
 
     //IMPRIME LOS TITULOS 
     for(int k=0; k<titulo.size(); k++){

@@ -7,7 +7,7 @@
 using namespace std;
 
 //FUNCIONES
-string cadenaNumero(string x){
+string cadenaNumero(string x, int datoTitulo){
 
     bool esNumeroSalir=0;
   
@@ -32,6 +32,10 @@ string cadenaNumero(string x){
                 }
             }
 
+           if(contadorPunto == 1 && x.size() == 1){ //por si acaso es solo un punto
+               x = "0";
+           }
+
           //si s un numero o punto o coma y no se contaron mas de 1 punto (contando el 1), se tiene una letra o no. 
         for(int i = 0; i<x.size(); i++){ 
 
@@ -55,6 +59,35 @@ string cadenaNumero(string x){
         }
 
     }
+
+    //RESTRICCIONES SEGUN LA COLUMNA
+    double paraComparar;
+    stringstream(x) >>paraComparar;
+
+    if(datoTitulo == 2){ //estamos en pH
+
+        
+
+        if(paraComparar < 0){
+            x = "0";
+        }
+        else if(paraComparar>14){
+            
+            x ="14";
+        }
+    }
+    else if(datoTitulo == 3){ // temperatura minima en celcius -273
+        
+        if(paraComparar < -273.15){
+            x = "-273.15";
+        }
+        
+    }else if(datoTitulo == 4){//milimetros de precipitacion
+
+        if(paraComparar<0){
+            x="0";
+        }
+    }
     
     return x;
 }
@@ -67,7 +100,7 @@ int main(){
     string texto;
 
     int cuentaLoop=0;
-//ABRIR EL ARCHIVO CSV Y VER SI NO TIENE FALLOS
+//ABRIR EL ARCHIVO CSV Y VER SI NO TIENE FALLOS. EL CSV DEBE TENER PUNTOS EN VEZ DE COMAS EN DECIMAL. ADEMAS PONER UNA COMA DESPUES DE CADA FIN DE LINEA-
  elArchivo.open("matrizCultivos.csv",ios::in);//se abre el archivo en modo lectura
 
     if(elArchivo.fail()){//si no se encuentra el archivo mandar mensaje
@@ -108,7 +141,7 @@ int main(){
     }
     
 
-    cout<<cantidadCol<<" = cantidad de columnas"<<endl;
+    //cout<<cantidadCol<<" = cantidad de columnas"<<endl; DEBUG
     
     vector < vector<string> > matriz;
 
@@ -127,7 +160,7 @@ int main(){
         tupla.push_back(word); //metre la cadena en tupla, que es un vecor
         
 
-        if(comas%5 == 0){   //con 5 comas se sabe que ya paso la primera linea
+        if(comas%cantidadCol == 0){   //con 5 comas se sabe que ya paso la primera linea
 
             matriz.push_back(tupla);     //se guarda el vector en otro vector llamado matriz
 
@@ -139,31 +172,29 @@ int main(){
         
     }
 
-    cout<<matriz.size()<<endl;
-    cout<<matriz[1].size()<<endl;
+    //cout<<matriz.size()<<endl; DEBUG
+    //cout<<matriz[1].size()<<endl; DEBUG
 
-    //IMPRIMIR LA MATRIZ?
-    for (int i =0; i<matriz.size(); i++){
+    //IMPRIMIR LA MATRIZ? DEBUG
+    //for (int i =0; i<matriz.size(); i++){
 
-        for(int j=0; j<matriz[i].size(); j++){ 
+      //  for(int j=0; j<matriz[i].size(); j++){ 
 
-            cout<<" "<<matriz[i][j];
-        }
-        cout<<endl;
-    }
-
-    cout<<matriz[3][4];
+        //    cout<<matriz[i][j].substr(0,7)<<"\t";
+        //}
+       // cout<<endl;
+   // }
 
     vector<string> datosUsuarioMax;
     vector<string> datosUsuarioMin;
 
 //TOMAR DATOS DEL USUARIO
 //int p=0; p<cantidadCol-2; p++ recordatorio de como estaba el loop
-   for(int p=2; p<cantidadCol; p++){  //empieza en 1 para hacer solo 4 veces ya que no se requiere poner la columna del cultivo
+   for(int p=1; p<cantidadCol; p++){  //empieza en 1 para hacer solo 4 veces ya que no se requiere poner la columna del cultivo
 
-        cout<<"p en el que estamos"<<p<<endl;
+        //cout<<"p en el que estamos"<<p<<endl; DEBUG
 
-        if(p == 2){ //si p es 0 entonces hacer la primera columna que seria textutra
+        if(p == 1){ //si p es 0 entonces hacer la primera columna que seria textutra
 
             bool flagSalir=0;
 
@@ -199,46 +230,47 @@ int main(){
                    cout<<"No ha elegido una opcion"<<endl;
                 }
             }
+        
+        }else{
+
+                //no se sabe porque pero esta imprimiendo una vez de mas, hay que corregir con un -2.
+
+                cout<<"escriba minimo valor registrado para "<<titulo[p]<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
+
+                string datoMin;
+                cin>>datoMin;
+                //si sirve como numero decimal, se usa y se asigna. la funcion obliga a 
+                datoMin = cadenaNumero(datoMin,p);
+                double a; //a es para comparar y ver cual es el verdadero min y max en caso de haberlos colocado al reves.
+
+                stringstream(datoMin) >> a;
+
+                cout<<"escriba maximo valor registrado para "<<titulo[p]<<endl;
+                string datoMax;
+                cin>>datoMax;
+                datoMax = cadenaNumero(datoMax,p);
+
+                //pasar a double, para poder comparar
+                double b;
+                stringstream(datoMax) >> b;
+
+                if(a<b){
+
+                    datosUsuarioMin.push_back(datoMin);
+                    datosUsuarioMax.push_back(datoMax);
+                }
+                else{
+                
+                    datosUsuarioMin.push_back(datoMax);
+                    datosUsuarioMax.push_back(datoMin);
+                }
+        
         }
 
-         //no se sabe porque pero esta imprimiendo una vez de mas, hay que corregir con un -2.
-
-        cout<<"escriba minimo valor registrado para "<<titulo[p]<<endl; //eso que dice pH hay que volverlo automatico y ponerle restricciones.                             
-
-        string datoMin;
-        cin>>datoMin;
-        //si sirve como numero decimal, se usa y se asigna. la funcion obliga a 
-        datoMin = cadenaNumero(datoMin);
-        double a; //a es para comparar y ver cual es el verdadero min y max en caso de haberlos colocado al reves.
-
-        stringstream(datoMin) >> a;
-
-        cout<<"escriba maximo valor registrado para "<<titulo[p]<<endl;
-        string datoMax;
-        cin>>datoMax;
-        datoMax = cadenaNumero(datoMax);
-
-        //pasar a double, para poder comparar
-
-        double b;
-        stringstream(datoMax) >> b;
-
-        if(a<b){
-
-            datosUsuarioMin.push_back(datoMin);
-            datosUsuarioMax.push_back(datoMax);
-        }
-        else{
-        
-            datosUsuarioMin.push_back(datoMax);
-            datosUsuarioMax.push_back(datoMin);
-        }
-        
-        
     }
-
+cout<<endl;
     //VER DATOS USUARIO
-
+    /*
     for(int a=0; a<datosUsuarioMax.size(); a++ ){
 
         cout<<datosUsuarioMax[a]<<" ";
@@ -249,8 +281,8 @@ int main(){
         cout<<datosUsuarioMin[b]<<" ";
     } 
     cout<<endl;
-
-    //IMPRIME LOS TITULOS
+*/
+    //IMPRIME LOS TITULOS 
     for(int k=0; k<titulo.size(); k++){
 
         cout<<titulo[k].substr(0,6)<<"\t";
